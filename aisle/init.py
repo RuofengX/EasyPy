@@ -5,7 +5,7 @@ import colorlog
 import sys
 import os
 import time
-from pyeasy.config import GLOBAL_LOGGER_NAME, GLOBAL_EXCEPTION_LOGGER_NAME, LOG_LEVEL
+from aisle.config import GLOBAL_LOGGER_NAME, GLOBAL_EXCEPTION_LOGGER_NAME, LOG_LEVEL
 
 
 '''

@@ -1,4 +1,4 @@
-from pyeasy import LOG, LogMixin, CliHelper
+from aisle import LOG, LogMixin, CliHelper
 import time
 
 @CliHelper
