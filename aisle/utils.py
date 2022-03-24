@@ -22,12 +22,12 @@ class CliHelper(LogMixin):
     def __call__(self, *args, **kwargs):
         try:
             
-            self.logger.debug(f'调用函数{self.func.__name__}')
-            self.logger.debug(f'#: {self.func.__doc__}')
+            self.logger.info(f'运行 > {self.func.__name__}')
+            self.logger.info(f'# > {self.func.__doc__}')
             startTime = time.time()
             rtn = self.func(*args, **kwargs)
             endTime = time.time()
-            self.logger.info(f'用时{endTime - startTime}秒')
+            self.logger.info(f'完成 > 用时{endTime - startTime}秒')
             
             return rtn
         
