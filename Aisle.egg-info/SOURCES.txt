@@ -1,0 +1,12 @@
+README.md
+setup.py
+Aisle.egg-info/PKG-INFO
+Aisle.egg-info/SOURCES.txt
+Aisle.egg-info/dependency_links.txt
+Aisle.egg-info/not-zip-safe
+Aisle.egg-info/requires.txt
+Aisle.egg-info/top_level.txt
+aisle/__init__.py
+aisle/config.py
+aisle/init.py
+aisle/utils.py
