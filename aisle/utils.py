@@ -1,5 +1,6 @@
 import logging
 import time
+from functools import wraps
 class LogMixin(object):
     """
     日志功能Mixin
@@ -9,15 +10,24 @@ class LogMixin(object):
     """
     def __init__(self):
         # 配置类的日志输出
-        self.logger = logging.getLogger(name=self.__class__.__name__)
-        self.logger.debug('日志Mixin')
+        _name = self.__class__.__name__
+        self.logger = logging.getLogger(name=_name)
+        self.logger.debug('创建日志功能 > {}'.format(_name))
 
+    def renameLogger(self, _name):
+        '''
+        重命名logger
+        '''
+        self.logger = logging.getLogger(name=_name)
+        self.logger.debug('重命名日志功能 > {}'.format(_name))
 
 class CliHelper(LogMixin):
     '''一个装饰器，给函数添加Log输出，并快速Debug'''
     def __init__(self, func):
         super().__init__()
         self.func = func
+        self.renameLogger(self.func.__name__)
+        
 
     def __call__(self, *args, **kwargs):
         try:
