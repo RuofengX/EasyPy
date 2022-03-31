@@ -6,7 +6,7 @@ import time
 GLOBAL_ENCODING = 'GB2312'
 
 # 日志等级， in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET']
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 
 # 环境变量
 ENVIRON_DICT = os.environ

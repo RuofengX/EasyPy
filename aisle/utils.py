@@ -1,6 +1,6 @@
 import logging
 import time
-from functools import wraps
+
 class LogMixin(object):
     """
     日志功能Mixin
@@ -8,8 +8,9 @@ class LogMixin(object):
     Properties:
         self.logger: logger实例
     """
-    def __init__(self):
-        # 配置类的日志输出
+    def __init__(self, *keys, **kwargs):
+        super().__init__(*keys, **kwargs)
+        
         _name = self.__class__.__name__
         self.logger = logging.getLogger(name=_name)
         self.logger.debug('创建日志功能 > {}'.format(_name))
