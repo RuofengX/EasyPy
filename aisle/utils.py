@@ -9,8 +9,7 @@ class LogMixin(object):
         self.logger: logger实例
     """
     def __init__(self, *keys, **kwargs):
-        if keys or kwargs:
-            raise TypeError('类初始化无效，请使用super(<className>).__init__(*args, **kwargs)初始化')
+        super().__init__(*keys, **kwargs)
         
         _name = self.__class__.__name__
         self.logger = logging.getLogger(name=_name)
