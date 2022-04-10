@@ -1,6 +1,9 @@
 import logging
 import time
-
+class AisleLogger(logging.Logger):
+    def __del__(self):
+        self.manager.loggerDict.pop(self.name, None)
+        
 class LogMixin():
     """
     日志功能Mixin
@@ -14,7 +17,7 @@ class LogMixin():
         _name = self.__class__.__name__
         self.logger = logging.getLogger(name=_name)
         self.logger.debug('创建日志功能 > {}'.format(_name))
-        
+        self.logger.remove = self.__logger_remove  # 临时解决内存泄漏
         
         super().__init__(*keys, **kwargs)
         '''提示：
@@ -29,9 +32,16 @@ class LogMixin():
         self.logger = logging.getLogger(name=_name)
         self.logger.debug('重命名日志功能 > {}'.format(_name))
     
+    def __logger_remove(self, handler):
+        '''
+        移除handler
+        '''
+        self.logger.manager.loggerDict.pop(self.logger.name)  # 删除对自身的循环引用
+        
+        
     def __del__(self):
         # 需要Python3.4以上版本，PEP442
-        self.logger.manager.loggerDict.pop(self.__class__.__name__)  # 删除对自身的循环引用
+        self.__logger_remove  # 删除对自身的循环引用
         
     
     
