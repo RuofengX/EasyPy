@@ -1,8 +1,7 @@
 import logging
 import time
 
-
-class LogMixin(object):
+class LogMixin():
     """
     日志功能Mixin
     配置了一些简单常用的功能方便使用。
@@ -29,8 +28,15 @@ class LogMixin(object):
         '''
         self.logger = logging.getLogger(name=_name)
         self.logger.debug('重命名日志功能 > {}'.format(_name))
-
-
+    
+    def __del__(self):
+        self.loggerDict.pop(self.__class__.__name__)
+        super().__del__()
+        
+    
+    
+    
+    
 class CliHelper(LogMixin):
     '''一个装饰器，给函数添加Log输出，并快速Debug'''
 
