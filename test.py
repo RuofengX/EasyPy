@@ -19,6 +19,10 @@ class TestCls(LogMixin):
 if __name__ == '__main__':
     LOG.error('测试错误')
     test()
-    TestCls()
-    debugTest()
+    a = TestCls()
+    # debugTest()
+    a = 0
+    a
+    
+    
     

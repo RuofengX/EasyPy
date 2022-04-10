@@ -31,8 +31,7 @@ class LogMixin():
     
     def __del__(self):
         # 需要Python3.4以上版本，PEP442
-        self.loggerDict.pop(self.__class__.__name__)  # 删除对自身的循环引用
-        super().__del__()
+        self.logger.manager.loggerDict.pop(self.__class__.__name__)  # 删除对自身的循环引用
         
     
     
