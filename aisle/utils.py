@@ -30,7 +30,8 @@ class LogMixin():
         self.logger.debug('重命名日志功能 > {}'.format(_name))
     
     def __del__(self):
-        self.loggerDict.pop(self.__class__.__name__)
+        # 需要Python3.4以上版本，PEP442
+        self.loggerDict.pop(self.__class__.__name__)  # 删除对自身的循环引用
         super().__del__()
         
     
