@@ -9,4 +9,5 @@ Aisle.egg-info/top_level.txt
 aisle/__init__.py
 aisle/config.py
 aisle/init.py
+aisle/logger.py
 aisle/utils.py
