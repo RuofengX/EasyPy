@@ -32,7 +32,7 @@ class AisleLoggerBase():
             'CRITICAL'
         ]
         self.name = name if name else self.__class__.__name__
-        self.format_string = '|{asctime:.19}| <{name}> [{levelname:><9}] {message}'
+        self.format_string = '|{asctime:.19}| [{name}] <{levelname:><9}> {message}'
 
         self._level = 0
 
@@ -221,7 +221,7 @@ class SyncLogger(AisleLoggerBase):
 
     def set_level(self, level_str: str = None):
         if level_str == 'DEBUG':
-            self.format_string = '|{asctime:.19}| <{name}@{call}> [{levelname:><9}] {message}'
+            self.format_string = '|{asctime:.19}| [{name}@{call}] <{levelname:><9}> {message}'
             self.warning('设置日志等级为DEBUG，日志性能将会下降')
         return super().set_level(level_str)
     
