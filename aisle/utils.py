@@ -17,7 +17,7 @@ class LogMixin():
     def __init__(self, logLevel: str=None, *keys, **kwargs):
         
         if logLevel is None:
-            logLevel = 'INFO'
+            logLevel = 'WARNING'
         _name = self.__class__.__name__
         
         self.logger = SyncLogger(name=_name)

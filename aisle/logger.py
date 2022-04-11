@@ -16,29 +16,32 @@ import psutil
 from objprint import op
 
 class AisleLoggerBase():
-    def __init__(self, name):
+    def __init__(self, name, level_str: str = None):
+        
         self._map = {
             'DEBUG': 0,
             'INFO': 1,
-            'WARNNING': 2,
+            'WARNING': 2,
             'ERROR': 3,
             'CRITICAL': 4
         }
         self._level_str = [
             'DEBUG',
             'INFO',
-            'WARNNING',
+            'WARNING',
             'ERROR',
             'CRITICAL'
         ]
         self.name = name if name else self.__class__.__name__
         self.format_string = '|{asctime:.19}| [{name}] <{levelname:><9}> {message}'
+        
+        if level_str is None:
+            level_str = 'WARNING'  # 默认为警告
+        self.set_level(level_str)
 
-        self._level = 0
-
-    def set_level(self, levelStr: str = None):
+    def set_level(self, level_str: str = None):
         try:
-            self._level = self._map[levelStr]
+            self._level = self._map[level_str]
         except KeyError:
             raise KeyError(f'无效的日志等级，请使用DEBUG/INFO/WARNN/ERROR/CRITI')
 
@@ -220,6 +223,7 @@ class SyncLogger(AisleLoggerBase):
         super().__init__(name=name)
 
     def set_level(self, level_str: str = None):
+        """增加功能：当日志等级为DEBUG时，额外输出调用者信息"""
         if level_str == 'DEBUG':
             self.format_string = '|{asctime:.19}| [{name}@{call}] <{levelname:><9}> {message}'
             self.warning('设置日志等级为DEBUG，日志性能将会下降')

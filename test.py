@@ -22,7 +22,7 @@ if __name__ == '__main__':
     past = time.time()
     n = 100
     for i in range(n):
-        logger.info('debug')
+        logger.debug('debug')
         logger.info('info')
         logger.warning('warn')
         logger.error('error')
