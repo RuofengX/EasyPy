@@ -1,19 +1,11 @@
 # 一个轻量化的日志模块
-import ast
-import asyncio
+import copy
 import inspect
-import logging
 import sys
 import time
 from time import sleep
-from typing import Any, Callable, Iterable, Mapping
-import rich
 from rich.console import Console
-from multiprocessing import Queue, Process, Pool, freeze_support
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-import signal
-import psutil
-from objprint import op
+from multiprocessing import Queue, Process, freeze_support
 
 class AisleLoggerBase():
     def __init__(self, name, level_str: str = None):
@@ -46,7 +38,15 @@ class AisleLoggerBase():
             raise KeyError(f'无效的日志等级，请使用DEBUG/INFO/WARNN/ERROR/CRITI')
 
     def get_child(self, suffix: str):
-        return self.__class__(f'{self.name}.{suffix}')
+        """
+        返回一个子logger
+        
+        名字为父logger名字+suffix
+        日志等级为父logger的日志等级
+        """
+        new = copy.copy(self)
+        new.name = f'{self.name}.{suffix}'
+        return new
     
     def getChild(self, suffix: str):
         """Deprecated"""
@@ -226,7 +226,6 @@ class SyncLogger(AisleLoggerBase):
         """增加功能：当日志等级为DEBUG时，额外输出调用者信息"""
         if level_str == 'DEBUG':
             self.format_string = '|{asctime:.19}| [{name}@{call}] <{levelname:><9}> {message}'
-            self.warning('设置日志等级为DEBUG，日志性能将会下降')
         return super().set_level(level_str)
     
     def getChild(self, suffix: str):
