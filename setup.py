@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 
-VERSION = '0.5.3'
+VERSION = '0.5.4'
 project_urls={
     "Documentation": "https://github.com/RuofengX/EasyPy",
     "Issue tracker": "https://github.com/RuofengX/EasyPy/issues"

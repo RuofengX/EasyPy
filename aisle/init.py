@@ -1,20 +1,10 @@
-from distutils.debug import DEBUG
 import logging
 import logging.config
-import colorlog
 import sys
-import os
-import time
-from aisle.config import GLOBAL_LOGGER_NAME, GLOBAL_EXCEPTION_LOGGER_NAME, LOG_LEVEL
+from .config import GLOBAL_LOGGER_NAME, GLOBAL_EXCEPTION_LOGGER_NAME, LOG_LEVEL
+from .utils import SyncLogger
 
-
-'''
-日志格式化配置
-以字典的形式配置logging.getLogger()默认返回的日志记录器，以此设置了全局格式。相关文档👇
-https://stackoverflow.com/questions/7507825/where-is-a-complete-example-of-logging-config-dictconfig
-https://pypi.org/project/colorlog/
-https://docs.python.org/zh-cn/3.7/library/logging.config.html#configuration-dictionary-schema
-'''
+# Depricated
 LOG_DICT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -76,16 +66,17 @@ logging.config.dictConfig(LOG_DICT_CONFIG)
 添加全局LOG，避免使用logging.debug()时创建新的handler混淆日志
 '''
 
-LOG = logging.getLogger(GLOBAL_LOGGER_NAME)
+LOG = SyncLogger(GLOBAL_LOGGER_NAME)
+LOG.set_level('INFO')
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Credits
 
-LOG.debug(
-    f'多彩日志，来自Sam Clements的colorlog, https://github.com/borntyping/python-colorlog')
+# LOG.debug(
+#     f'多彩日志，来自Sam Clements的colorlog, https://github.com/borntyping/python-colorlog')
 
-# 手动加载Colorlog，避免IDE报错
-_COLORLOG_IS_NECESSARY = colorlog
+# # 手动加载Colorlog，避免IDE报错
+# _COLORLOG_IS_NECESSARY = colorlog
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''添加全局异常日志
@@ -94,27 +85,25 @@ _COLORLOG_IS_NECESSARY = colorlog
 
 '''
 
-EXCP_LOG = logging.getLogger(GLOBAL_EXCEPTION_LOGGER_NAME)
-EXCP_LOG.setLevel(LOG_LEVEL)
+EXCP_LOG = SyncLogger(GLOBAL_EXCEPTION_LOGGER_NAME)
+EXCP_LOG.set_level('INFO')
 
 
 def _exception_handler(exception_type, exception_value, traceback):
     '''All trace are belong to this!'''
 
-    EXCP_LOG.error(
-        f"检测到异常！{exception_type.__name__}({exception_value})")
+    EXCP_LOG.critical(
+        f"检测到程序异常！Error catched!{exception_type.__name__}({exception_value})")
     sys.exit(1)
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-if LOG_LEVEL != "DEBUG":
+def catch_exception():
+    '''
+    将异常处理函数添加到sys.excepthook
+    '''
     sys.excepthook = _exception_handler
-
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# 关于DEBUG的警告
-if LOG_LEVEL == "DEBUG":
-    LOG.warning('警告！您已开启DEBUG模式，日志内容可能存在换行，请手工查阅需要的信息。')
+    
+if LOG_LEVEL != "DEBUG":
+    catch_exception()

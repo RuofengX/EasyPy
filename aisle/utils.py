@@ -1,7 +1,6 @@
 import logging
 import time
 from .logger import ProcessLogger, SyncLogger
-
 class AisleLogger(logging.Logger):
     def __del__(self):
         self.manager.loggerDict.pop(self.name, None)
@@ -52,7 +51,7 @@ class CliHelper(LogMixin):
     def __init__(self, func):
         super().__init__()
         self.func = func
-        self.renameLogger(self.func.__name__)
+        self.logger.name = self.func.__name__
 
     def __call__(self, *args, **kwargs):
         try:
@@ -68,7 +67,4 @@ class CliHelper(LogMixin):
 
         except Exception as e:
             self.logger.error(f'{type(e).__name__}: {e}')
-            self.logger.error(f'进入pdb模式，将会重新抛出异常...')
-            import pdb
-            pdb.set_trace()
             raise e

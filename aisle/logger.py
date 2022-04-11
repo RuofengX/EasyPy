@@ -5,7 +5,10 @@ import sys
 import time
 from time import sleep
 from rich.console import Console
+
 from multiprocessing import Queue, Process, freeze_support
+
+from .config import TIME_FORMAT
 
 class AisleLoggerBase():
     def __init__(self, name, level_str: str = None):
@@ -178,7 +181,7 @@ class SyncLogger(AisleLoggerBase):
     """同步日志记录器
     
     一个简单的日志记录器，无状态"""
-    style = {
+    style = {  # TODO: 使用colorama替代
         'fore':
         {   # 前景色
             'black': 30,  # 黑色
@@ -257,7 +260,7 @@ class SyncLogger(AisleLoggerBase):
             call = inspect.stack()[2].function
             
         msg = self.format_string.format(
-            asctime=time.asctime(),
+            asctime= time.strftime(TIME_FORMAT, time.localtime()),
             levelname=self._level_str[targetLevel],
             name=self.name,
             call=call,

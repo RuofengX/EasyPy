@@ -6,21 +6,21 @@ def test():
     '''测试函数'''
     time.sleep(1)
 
-@CliHelper
-def debugTest():
-    '''专门用来测试debug的函数'''
-    raise IOError('测试异常')
-
 class TestCls(LogMixin):
     def __init__(self):
         super().__init__()
+        self.logger.set_level('DEBUG')
         self.logger.critical('测试类')
         
-if __name__ == '__main__':
+        
+def cls_test():
+    c = TestCls()
+    c.logger.info(f'LogMixin.logger: {c.logger}')
+    
+def benchmark(n):
     o = LogMixin()
     logger = o.logger
     past = time.time()
-    n = 100
     for i in range(n):
         logger.debug('debug')
         logger.info('info')
@@ -29,6 +29,11 @@ if __name__ == '__main__':
         logger.critical('critical')
     timeAvg = (time.time() - past) / n / 5 * 1000
     logger.warning(f'每条消息耗时{timeAvg:.2}毫秒')
+    
+if __name__ == '__main__':
+    test()
+    cls_test()
+    # benchmark(10)
     
     
     
