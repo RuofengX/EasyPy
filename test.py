@@ -17,12 +17,18 @@ class TestCls(LogMixin):
         self.logger.critical('测试类')
         
 if __name__ == '__main__':
-    LOG.error('测试错误')
-    test()
-    a = TestCls()
-    # debugTest()
-    a = 0
-    a
+    o = LogMixin()
+    logger = o.logger
+    past = time.time()
+    n = 100
+    for i in range(n):
+        logger.debug('debug')
+        logger.info('info')
+        logger.warning('warn')
+        logger.error('error')
+        logger.critical('critical')
+    timeAvg = (time.time() - past) / n / 5 * 1000
+    logger.warning(f'每条消息耗时{timeAvg}毫秒')
     
     
     
