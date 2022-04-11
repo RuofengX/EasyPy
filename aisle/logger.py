@@ -1,5 +1,8 @@
 # 一个轻量化的日志模块
+import ast
 import asyncio
+import inspect
+import logging
 import sys
 import time
 from time import sleep
@@ -10,7 +13,7 @@ from multiprocessing import Queue, Process, Pool, freeze_support
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import signal
 import psutil
-
+from objprint import op
 
 class AisleLoggerBase():
     def __init__(self, name):
@@ -21,7 +24,7 @@ class AisleLoggerBase():
             'ERROR': 3,
             'CRITICAL': 4
         }
-        self._levelStr = [
+        self._level_str = [
             'DEBUG',
             'INFO',
             'WARNNING',
@@ -29,18 +32,22 @@ class AisleLoggerBase():
             'CRITICAL'
         ]
         self.name = name if name else self.__class__.__name__
-        self.formatString = '|{asctime:.19}| <{levelname:><9} [{name}] {message}'
+        self.format_string = '|{asctime:.19}| <{name}> [{levelname:><9}] {message}'
 
         self._level = 0
 
-    def setLevel(self, levelStr: str = None):
+    def set_level(self, levelStr: str = None):
         try:
             self._level = self._map[levelStr]
         except KeyError:
             raise KeyError(f'无效的日志等级，请使用DEBUG/INFO/WARNN/ERROR/CRITI')
 
-    def getChild(self, suffix: str):
+    def get_child(self, suffix: str):
         return self.__class__(f'{self.name}.{suffix}')
+    
+    def getChild(self, suffix: str):
+        """Deprecated"""
+        return self.get_child(suffix)
 
     def debug(self, msg: str):
         raise NotImplementedError
@@ -57,7 +64,7 @@ class AisleLoggerBase():
     def critical(self, msg: str):
         raise NotImplementedError
 
-
+        
 class OutputProcess(Process):
     def __init__(self) -> None:
         """单独一个进程来处理打印"""
@@ -100,7 +107,6 @@ class OutputProcess(Process):
         except Exception as e:
             console.log(f'日志功能异常 > {type(e)} {e}')
             return
-
 
 class ProcessLogger(AisleLoggerBase):
     _p = OutputProcess()  # 日志打印进程，可以灵活开关
@@ -147,9 +153,9 @@ class ProcessLogger(AisleLoggerBase):
         if msg is None:
             msg = 'None'
         if targetLevel >= self._level:
-            msg = self.formatString.format(
+            msg = self.format_string.format(
                 asctime=time.asctime(),
-                levelname=self._levelStr[targetLevel],
+                levelname=self._level_str[targetLevel],
                 name=self.name,
                 message=msg
             )
@@ -166,6 +172,9 @@ class ProcessLogger(AisleLoggerBase):
 
 
 class SyncLogger(AisleLoggerBase):
+    """同步日志记录器
+    
+    一个简单的日志记录器，无状态"""
     style = {
         'fore':
         {   # 前景色
@@ -210,8 +219,14 @@ class SyncLogger(AisleLoggerBase):
     def __init__(self, name: str = None):
         super().__init__(name=name)
 
+    def set_level(self, level_str: str = None):
+        if level_str == 'DEBUG':
+            self.format_string = '|{asctime:.19}| <{name}@{call}> [{levelname:><9}] {message}'
+            self.warning('设置日志等级为DEBUG，日志性能将会下降')
+        return super().set_level(level_str)
+    
     def getChild(self, suffix: str):
-        return super().getChild(suffix)
+        return super().get_child(suffix)
 
     def debug(self, msg: str):
         msg = self.__format(0, msg)
@@ -234,10 +249,15 @@ class SyncLogger(AisleLoggerBase):
         self.__send(4, msg)
 
     def __format(self, targetLevel: int, msg: str):
-        msg = self.formatString.format(
+        call = ''
+        if self._level == 0:
+            call = inspect.stack()[2].function
+            
+        msg = self.format_string.format(
             asctime=time.asctime(),
-            levelname=self._levelStr[targetLevel],
+            levelname=self._level_str[targetLevel],
             name=self.name,
+            call=call,
             message=msg
         )
         return msg
@@ -262,7 +282,8 @@ class SyncLogger(AisleLoggerBase):
             msg = self.__useStyle(msg, fore='purple')
         # msg += '\n'
         # sys.stdout.write(msg)
-        print(msg)
+        print(msg, file=sys.__stdout__)
+        
 
     def __useStyle(self, msg: str, mode: str='', fore:str='', back:str=''):
         # mode  = '%s' % self.style['mode'][mode] if mode in self.style['mode'].keys() else ''
@@ -274,23 +295,32 @@ class SyncLogger(AisleLoggerBase):
         return '%s%s%s' % (style, msg, end)
 
 if __name__ == '__main__':
-    async def benchmark(n):
-
-        alogger = ProcessLogger()
-        alogger.setLevel('DEBUG')
+    def benchmark(n):
+        alogger = SyncLogger()
+        alogger.set_level('INFO')  # 会导致两次输出
         start = time.time()
-        for i in range(n):
-            alogger.debug('这是一条debug消息')
-            alogger.info('这是一条info消息')
-            alogger.warning('这是一条警告消息')
-            alogger.error('这是一条错误消息')
-            alogger.critical('这是一条崩溃消息')
-        end = time.time()
+            
+        
+        if n <= 0:
+            end = time.time()
+        else:
+            for i in range(n):
+                alogger.debug('这是一条debug消息')
+                alogger.info('这是一条info消息')
+                alogger.warning('这是一条警告消息')
+                alogger.error('这是一条错误消息')
+                alogger.critical('这是一条崩溃消息')
+            end = time.time()
+            
         return end - start
 
+    # n = 1
     n = 500
-    result = asyncio.run(benchmark(n))
+    base = benchmark(0)
+    result = benchmark(n)
+    result -= base
+    
     timeAvg = result / n / 5 * 1000
-    print(f'每条消息阻塞{timeAvg:.3}毫秒')
+    print(f'每条消息大约阻塞{timeAvg:.3}毫秒')
+    print(f'{n*5}条消息共消耗{result:.3}秒')
 
-    # ProcessLogger().warning('这是最后一条消息')

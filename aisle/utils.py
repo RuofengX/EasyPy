@@ -1,5 +1,7 @@
 import logging
 import time
+from .logger import ProcessLogger, SyncLogger
+
 class AisleLogger(logging.Logger):
     def __del__(self):
         self.manager.loggerDict.pop(self.name, None)
@@ -12,12 +14,17 @@ class LogMixin():
         self.logger: logger实例
     """
 
-    def __init__(self, *keys, **kwargs):
-
+    def __init__(self, logLevel: str=None, *keys, **kwargs):
+        
+        if logLevel is None:
+            logLevel = 'INFO'
         _name = self.__class__.__name__
-        self.logger = logging.getLogger(name=_name)
-        self.logger.debug('创建日志功能 > {}'.format(_name))
-        self.logger.remove = self.__logger_remove  # 临时解决内存泄漏
+        
+        self.logger = SyncLogger(name=_name)
+        self.logger.set_level(logLevel)
+        
+        self.logger.debug('模块创建了日志功能 > {}'.format(_name))
+        
         
         super().__init__(*keys, **kwargs)
         '''提示：
@@ -26,22 +33,14 @@ class LogMixin():
         '''
         
     def renameLogger(self, _name):
-        '''
-        重命名logger
+        '''重命名logger
+        
+        Deprecated
+        弃用，请使用logger对象的getChild()方法获得——名字上的——子logger
         '''
         self.logger = logging.getLogger(name=_name)
         self.logger.debug('重命名日志功能 > {}'.format(_name))
     
-    def __logger_remove(self, handler):
-        '''
-        移除handler
-        '''
-        self.logger.manager.loggerDict.pop(self.logger.name)  # 删除对自身的循环引用
-        
-        
-    def __del__(self):
-        # 需要Python3.4以上版本，PEP442
-        self.__logger_remove  # 删除对自身的循环引用
         
     
     

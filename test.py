@@ -22,13 +22,13 @@ if __name__ == '__main__':
     past = time.time()
     n = 100
     for i in range(n):
-        logger.debug('debug')
+        logger.info('debug')
         logger.info('info')
         logger.warning('warn')
         logger.error('error')
         logger.critical('critical')
     timeAvg = (time.time() - past) / n / 5 * 1000
-    logger.warning(f'每条消息耗时{timeAvg}毫秒')
+    logger.warning(f'每条消息耗时{timeAvg:.2}毫秒')
     
     
     
