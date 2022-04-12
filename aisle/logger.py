@@ -8,7 +8,7 @@ from rich.console import Console
 
 from multiprocessing import Queue, Process, freeze_support
 
-from .config import TIME_FORMAT
+from aisle.config import TIME_FORMAT
 
 class AisleLoggerBase():
     def __init__(self, name, level_str: str = None):
