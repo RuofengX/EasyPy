@@ -302,8 +302,8 @@ class SyncLogger(AisleLoggerBase):
 
 if __name__ == '__main__':
     def benchmark(n):
-        alogger = SyncLogger()
-        alogger.set_level('INFO')  # 会导致两次输出
+        sync_logger = SyncLogger()
+        sync_logger.set_level('INFO')
         start = time.time()
             
         
@@ -311,11 +311,11 @@ if __name__ == '__main__':
             end = time.time()
         else:
             for i in range(n):
-                alogger.debug('这是一条debug消息')
-                alogger.info('这是一条info消息')
-                alogger.warning('这是一条警告消息')
-                alogger.error('这是一条错误消息')
-                alogger.critical('这是一条崩溃消息')
+                sync_logger.debug('这是一条debug消息')
+                sync_logger.info('这是一条info消息')
+                sync_logger.warning('这是一条警告消息')
+                sync_logger.error('这是一条错误消息')
+                sync_logger.critical('这是一条崩溃消息')
             end = time.time()
             
         return end - start

@@ -4,7 +4,7 @@ import sys
 from .config import GLOBAL_LOGGER_NAME, GLOBAL_EXCEPTION_LOGGER_NAME, LOG_LEVEL
 from .utils import SyncLogger
 
-# Depricated
+# Deprecated
 LOG_DICT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -57,7 +57,7 @@ LOG_DICT_CONFIG = {
     }
 }
 
-# Depricated
+# Deprecated
 # logging.config.dictConfig(LOG_DICT_CONFIG)
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ def _exception_handler(exception_type, exception_value, traceback):
     '''All trace are belong to this!'''
 
     EXCP_LOG.critical(
-        f"检测到程序异常！Error catched!{exception_type.__name__}({exception_value})")
+        f"检测到程序异常！Error caught!{exception_type.__name__}({exception_value})")
     sys.exit(1)
 
 

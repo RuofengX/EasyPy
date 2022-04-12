@@ -33,6 +33,7 @@ def benchmark(n):
 if __name__ == '__main__':
     test()
     cls_test()
+    LOG.critical('全局测试')
     # benchmark(10)
     
     
