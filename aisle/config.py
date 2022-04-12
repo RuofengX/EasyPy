@@ -6,19 +6,19 @@ import time
 GLOBAL_ENCODING = 'GB2312'
 
 # 日志等级， in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET']
-# Depricated
+# Deprecated
 LOG_LEVEL = 'INFO'
 
 # 环境变量
-# Depricated
+# Deprecated
 ENVIRON_DICT = os.environ
 
 # 全局日志记录器名称
-# Depricated
+# Deprecated
 GLOBAL_LOGGER_NAME = 'Global'  # 对应了全局日志实例LOG的名称显示名称
 
 
-# Depricated
+# Deprecated
 GLOBAL_EXCEPTION_LOGGER_NAME = 'Except'  # 对应了全局异常日志实例LOG的名称显示名称
 
 SPLIT_LINE = """# --------------------------------------------------------"""
@@ -27,7 +27,7 @@ TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 STRFTIME = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
 
-# Depricated
+# Deprecated
 LOG_DICT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': True,

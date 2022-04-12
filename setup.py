@@ -10,7 +10,7 @@ project_urls={
 setup(
     name='Aisle',  # package name
     version=VERSION,  # package version
-    description='Some usageful log utils',  # package description
+    description='Some useful log utils',  # package description
     packages=find_packages(),
     zip_safe=False,
     install_requires=[
