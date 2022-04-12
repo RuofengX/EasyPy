@@ -38,7 +38,7 @@ class AisleLoggerBase():
         try:
             self._level = self._map[level_str]
         except KeyError:
-            raise KeyError(f'无效的日志等级，请使用DEBUG/INFO/WARNN/ERROR/CRITI')
+            raise KeyError(f'无效的日志等级，请使用DEBUG/INFO/WARNING/ERROR/CRITICAL')
 
     def get_child(self, suffix: str):
         """
